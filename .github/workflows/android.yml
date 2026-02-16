@@ -1,4 +1,4 @@
-name: VEGA APK Build
+name: VEGA Universal APK Build
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
       - name: Setup JDK 17
@@ -18,14 +18,19 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Grant Permission
+      - name: Grant Gradle Permission
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --stacktrace
 
-      - name: Upload APK
+      - name: Show All APK Files (Deep Scan)
+        run: |
+          echo "Scanning for APK files..."
+          find . -type f -name "*.apk"
+
+      - name: Upload All APK Files
         uses: actions/upload-artifact@v4
         with:
-          name: VEGA-Debug-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: VEGA-ALL-APK
+          path: '**/*.apk'
